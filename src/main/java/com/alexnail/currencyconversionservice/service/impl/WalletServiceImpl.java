@@ -5,7 +5,9 @@ import com.alexnail.currencyconversionservice.repository.WalletRepository;
 import com.alexnail.currencyconversionservice.service.WalletService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -32,5 +34,13 @@ public class WalletServiceImpl implements WalletService {
 
     public void delete(Long id) {
         repository.delete(id);
+    }
+
+    @Override
+    @Transactional
+    public void setValue(Long walletId, BigDecimal value) {
+        Wallet wallet = repository.findById(walletId);
+        wallet.setValue(value);
+        repository.save(wallet);
     }
 }

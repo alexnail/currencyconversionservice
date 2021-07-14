@@ -26,11 +26,12 @@ public class TransferServiceImpl implements TransferService {
 
         BigDecimal amountFrom = exchangeRateService.exchange(amount, currency, sourceWallet.getCurrency());
         BigDecimal amountTo = exchangeRateService.exchange(amountFrom, sourceWallet.getCurrency(), targetWallet.getCurrency());
-        sourceWallet.setValue(sourceWallet.getValue().subtract(amountFrom));
 
         BigDecimal amountToExCommission = commissionService.getAmountMinusCommission(
                 amountTo, Pair.of(sourceWallet.getCurrency(), targetWallet.getCurrency())
         );
-        targetWallet.setValue(targetWallet.getValue().add(amountToExCommission));
+
+        walletService.setValue(sourceWalletId, sourceWallet.getValue().subtract(amountFrom));
+        walletService.setValue(targetWalletId, targetWallet.getValue().add(amountToExCommission));
     }
 }
