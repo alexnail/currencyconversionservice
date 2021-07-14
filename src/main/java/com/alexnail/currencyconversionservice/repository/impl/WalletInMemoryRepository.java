@@ -4,26 +4,15 @@ import com.alexnail.currencyconversionservice.model.Wallet;
 import com.alexnail.currencyconversionservice.repository.WalletRepository;
 import org.springframework.stereotype.Repository;
 
-import javax.annotation.PostConstruct;
-import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Repository
 public class WalletInMemoryRepository implements WalletRepository {
-    private Map<Long, Wallet> wallets = new HashMap<>();
 
-    @PostConstruct
-    private void init() {
-        wallets.put(1L, Wallet.builder()
-                .id(1L)
-                .value(BigDecimal.valueOf(100))
-                .currency("EUR").build());
-    }
+    private final Map<Long, Wallet> wallets = new HashMap<>();
 
     @Override
     public List<Wallet> getAll() {
@@ -36,8 +25,8 @@ public class WalletInMemoryRepository implements WalletRepository {
     }
 
     @Override
-    public Long create(Wallet wallet) {
-        long newId = wallets.keySet().stream().max(Long::compare).get();
+    public Long save(Wallet wallet) {
+        long newId = wallets.keySet().stream().max(Long::compare).orElse(0L);
         wallet.setId(++newId);
         wallets.put(newId, wallet);
         return newId;

@@ -11,7 +11,7 @@ public interface WalletRepository {
 
     Wallet findById(Long id);
 
-    Long create(Wallet wallet);
+    Long save(Wallet wallet);
 
     void update(Wallet wallet);
 
