@@ -5,8 +5,8 @@ import com.alexnail.currencyconversionservice.repository.CommissionInMemoryRepos
 import com.alexnail.currencyconversionservice.repository.CommissionRepository;
 import com.alexnail.currencyconversionservice.repository.ExchangeRateInMemoryRepository;
 import com.alexnail.currencyconversionservice.repository.ExchangeRateRepository;
-import com.alexnail.currencyconversionservice.repository.impl.WalletInMemoryRepository;
 import com.alexnail.currencyconversionservice.repository.WalletRepository;
+import com.alexnail.currencyconversionservice.repository.impl.WalletInMemoryRepository;
 import com.alexnail.currencyconversionservice.service.impl.CommissionServiceImpl;
 import com.alexnail.currencyconversionservice.service.impl.ExchangeRateServiceImpl;
 import com.alexnail.currencyconversionservice.service.impl.TransferServiceImpl;
@@ -54,8 +54,8 @@ public class TransferServiceTest {
     public void testTransfer() {
         transferService.transfer(BigDecimal.valueOf(1000.0), "RUB", 1L, 2L);
 
-        Wallet sourceWallet = walletService.get(1L);
-        Wallet targetWallet = walletService.get(2L);
+        Wallet sourceWallet = walletService.getById(1L);
+        Wallet targetWallet = walletService.getById(2L);
         assertAll(
                 () -> assertEquals(BigDecimal.valueOf(89.0).stripTrailingZeros(), sourceWallet.getValue().stripTrailingZeros()),
                 () -> assertEquals(BigDecimal.valueOf(162.9591).stripTrailingZeros(), targetWallet.getValue().stripTrailingZeros())

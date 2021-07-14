@@ -21,17 +21,16 @@ public class TransferServiceImpl implements TransferService {
     @Transactional
     public void transfer(BigDecimal amount, String currency,
                          Long sourceWalletId, Long targetWalletId) {
-        Wallet sourceWallet = walletService.get(sourceWalletId);
-        Wallet targetWallet = walletService.get(targetWalletId);
+        Wallet sourceWallet = walletService.getById(sourceWalletId);
+        Wallet targetWallet = walletService.getById(targetWalletId);
 
-        BigDecimal amountFrom = exchangeRateService.exchange(amount, currency, sourceWallet.getCurrency());
-        BigDecimal amountTo = exchangeRateService.exchange(amountFrom, sourceWallet.getCurrency(), targetWallet.getCurrency());
+        BigDecimal withdrawAmount = exchangeRateService.exchange(amount, currency, sourceWallet.getCurrency());
+        BigDecimal depositAmount = exchangeRateService.exchange(withdrawAmount, sourceWallet.getCurrency(), targetWallet.getCurrency());
 
-        BigDecimal amountToExCommission = commissionService.getAmountMinusCommission(
-                amountTo, Pair.of(sourceWallet.getCurrency(), targetWallet.getCurrency())
+        BigDecimal depositExCommission = commissionService.getAmountMinusCommission(
+                depositAmount, Pair.of(sourceWallet.getCurrency(), targetWallet.getCurrency())
         );
-
-        walletService.setValue(sourceWalletId, sourceWallet.getValue().subtract(amountFrom));
-        walletService.setValue(targetWalletId, targetWallet.getValue().add(amountToExCommission));
+        walletService.withdraw(sourceWalletId, withdrawAmount);
+        walletService.deposit(targetWalletId, depositExCommission);
     }
 }

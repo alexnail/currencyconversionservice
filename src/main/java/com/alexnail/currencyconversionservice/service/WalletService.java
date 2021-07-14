@@ -9,7 +9,7 @@ public interface WalletService {
 
     List<Wallet> findAll();
 
-    Wallet get(Long id);
+    Wallet getById(Long id);
 
     Long create(Wallet wallet);
 
@@ -18,4 +18,8 @@ public interface WalletService {
     void delete(Long id);
 
     void setValue(Long walletId, BigDecimal value);
+
+    void withdraw(Long walletId, BigDecimal amount);
+
+    void deposit(Long walletId, BigDecimal amount);
 }

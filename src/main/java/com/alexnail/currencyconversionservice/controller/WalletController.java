@@ -30,7 +30,7 @@ public class WalletController {
 
     @GetMapping("/{id}")
     public Wallet findById(@PathVariable("id") Long id) {
-        return service.get(id);
+        return service.getById(id);
     }
 
     @PostMapping
@@ -42,7 +42,7 @@ public class WalletController {
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void update(@PathVariable("id") Long id, @RequestBody Wallet wallet) {
-        Wallet found = service.get(wallet.getId());
+        Wallet found = service.getById(wallet.getId());
         if (found != null)
             service.update(wallet);
     }
