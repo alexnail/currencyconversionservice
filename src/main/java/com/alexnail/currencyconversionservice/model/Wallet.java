@@ -17,7 +17,7 @@ import java.math.BigDecimal;
 @Entity
 @Builder
 public class Wallet {
-    private BigDecimal value;
+    private BigDecimal amount;
     private String currency;
 
     @Id

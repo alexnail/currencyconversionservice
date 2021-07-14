@@ -1,8 +1,10 @@
 package com.alexnail.currencyconversionservice.controller;
 
+import com.alexnail.currencyconversionservice.dto.WalletDto;
 import com.alexnail.currencyconversionservice.model.Wallet;
 import com.alexnail.currencyconversionservice.service.WalletService;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,41 +17,53 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/wallets")
+@RequestMapping("/api/wallets")
 @AllArgsConstructor
 public class WalletController {
 
-    private WalletService service;
+    private final WalletService service;
+
+    private final ModelMapper modelMapper;
 
     @GetMapping
-    public List<Wallet> findAll() {
-        return service.findAll();
+    public List<WalletDto> findAll() {
+        List<Wallet> wallets = service.findAll();
+        return wallets.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
-    public Wallet findById(@PathVariable("id") Long id) {
-        return service.getById(id);
+    public WalletDto findById(@PathVariable("id") Long id) {
+        return convertToDto(service.getById(id));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Long create(@RequestBody Wallet wallet) {
-        return service.create(wallet);
+    public Long create(@RequestBody WalletDto wallet) {
+        return service.create(convertToEntity(wallet));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping()
     @ResponseStatus(HttpStatus.OK)
-    public void update(@PathVariable("id") Long id, @RequestBody Wallet wallet) {
+    public void update(@RequestBody WalletDto wallet) {
         Wallet found = service.getById(wallet.getId());
         if (found != null)
-            service.update(wallet);
+            service.update(convertToEntity(wallet));
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void delete(@PathVariable("id") Long id) {
         service.delete(id);
+    }
+
+    Wallet convertToEntity(WalletDto dto) {
+        return modelMapper.map(dto, Wallet.class);
+    }
+
+    WalletDto convertToDto(Wallet entity) {
+        return modelMapper.map(entity, WalletDto.class);
     }
 }

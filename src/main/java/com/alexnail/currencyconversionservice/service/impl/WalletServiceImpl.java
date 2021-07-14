@@ -40,7 +40,7 @@ public class WalletServiceImpl implements WalletService {
     @Transactional
     public void setValue(Long walletId, BigDecimal value) {
         Wallet wallet = repository.findById(walletId);
-        wallet.setValue(value);
+        wallet.setAmount(value);
         repository.save(wallet);
     }
 
@@ -48,16 +48,16 @@ public class WalletServiceImpl implements WalletService {
     @Transactional
     public void withdraw(Long walletId, BigDecimal amount) {
         Wallet wallet = getById(walletId);
-        BigDecimal value = wallet.getValue();
-        wallet.setValue(value.subtract(amount));
+        BigDecimal value = wallet.getAmount();
+        wallet.setAmount(value.subtract(amount));
         repository.save(wallet);
     }
 
     @Override
     public void deposit(Long walletId, BigDecimal amount) {
         Wallet wallet = getById(walletId);
-        BigDecimal value = wallet.getValue();
-        wallet.setValue(value.add(amount));
+        BigDecimal value = wallet.getAmount();
+        wallet.setAmount(value.add(amount));
         repository.save(wallet);
     }
 }
