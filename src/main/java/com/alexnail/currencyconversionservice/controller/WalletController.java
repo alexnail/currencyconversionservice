@@ -41,7 +41,7 @@ public class WalletController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Long create(@RequestBody WalletDto wallet) {
+    public Wallet create(@RequestBody WalletDto wallet) {
         return service.create(convertToEntity(wallet));
     }
 

@@ -11,7 +11,7 @@ public interface WalletService {
 
     Wallet getById(Long id);
 
-    Long create(Wallet wallet);
+    Wallet create(Wallet wallet);
 
     void update(Wallet wallet);
 

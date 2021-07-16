@@ -9,6 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 @AllArgsConstructor
@@ -17,29 +19,31 @@ public class WalletServiceImpl implements WalletService {
     private final WalletRepository repository;
 
     public List<Wallet> findAll() {
-        return repository.getAll();
+        return StreamSupport.stream(repository.findAll().spliterator(), false)
+                .collect(Collectors.toList());
     }
 
     public Wallet getById(Long id) {
-        return repository.findById(id);
+        return repository.findById(id).orElseThrow();
     }
 
-    public Long create(Wallet wallet) {
+    public Wallet create(Wallet wallet) {
         return repository.save(wallet);
     }
 
     public void update(Wallet wallet) {
-        repository.update(wallet);
+        if (repository.existsById(wallet.getId()))
+            repository.save(wallet);
     }
 
     public void delete(Long id) {
-        repository.delete(id);
+        repository.deleteById(id);
     }
 
     @Override
     @Transactional
     public void setValue(Long walletId, BigDecimal value) {
-        Wallet wallet = repository.findById(walletId);
+        Wallet wallet = repository.findById(walletId).orElseThrow();
         wallet.setAmount(value);
         repository.save(wallet);
     }
