@@ -14,10 +14,13 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.math.BigDecimal;
 import java.util.Collections;
 
-import static org.hamcrest.Matchers.*;
-import static org.mockito.BDDMockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.BDDMockito.given;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(WalletController.class)
@@ -33,7 +36,7 @@ class WalletControllerTest {
     public void testGetWallets() throws Exception {
         Wallet wallet = Wallet.builder().id(1L).amount(BigDecimal.ONE).currency("EUR").build();
         given(service.findAll()).willReturn(Collections.singletonList(wallet));
-        mvc.perform(get("/api/wallets")
+        mvc.perform(get("/api/wallets").with(user("user").password("password"))
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
