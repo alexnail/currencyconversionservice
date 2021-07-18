@@ -6,10 +6,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/")
-public class RootController {
+public class HomeController {
 
     @GetMapping
-    public String getRoot() {
+    public String getHome() {
         return "Currency conversion service";
     }
 }
