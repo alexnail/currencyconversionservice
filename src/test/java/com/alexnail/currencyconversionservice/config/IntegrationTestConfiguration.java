@@ -1,4 +1,4 @@
-package com.alexnail.currencyconversionservice.configuration;
+package com.alexnail.currencyconversionservice.config;
 
 import com.alexnail.currencyconversionservice.repository.CommissionInMemoryRepository;
 import com.alexnail.currencyconversionservice.repository.CommissionRepository;

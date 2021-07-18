@@ -1,6 +1,6 @@
 package com.alexnail.currencyconversionservice.service;
 
-import com.alexnail.currencyconversionservice.configuration.IntegrationTestConfiguration;
+import com.alexnail.currencyconversionservice.config.IntegrationTestConfiguration;
 import com.alexnail.currencyconversionservice.model.Wallet;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
