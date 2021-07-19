@@ -1,0 +1,19 @@
+{
+  "properties": [
+    {
+      "name": "exchangerate.obsolete.threshold.mins",
+      "type": "java.lang.Integer",
+      "description": "Threshold value to obsolete exchange rate value in minutes."
+    },
+    {
+      "name": "exchangerate.remote.service.url",
+      "type": "java.lang.String",
+      "description": "Base URL of the remote service API."
+    },
+    {
+      "name": "exchangerate.remote.service.key",
+      "type": "java.lang.String",
+      "description": "Remote service API access key."
+    }
+  ]
+}

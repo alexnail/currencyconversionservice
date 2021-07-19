@@ -1,19 +1,9 @@
 package com.alexnail.currencyconversionservice.config;
 
-import com.alexnail.currencyconversionservice.repository.CommissionInMemoryRepository;
-import com.alexnail.currencyconversionservice.repository.CommissionRepository;
-import com.alexnail.currencyconversionservice.repository.ExchangeRateInMemoryRepository;
-import com.alexnail.currencyconversionservice.repository.ExchangeRateRepository;
-import com.alexnail.currencyconversionservice.repository.WalletRepository;
+import com.alexnail.currencyconversionservice.repository.*;
 import com.alexnail.currencyconversionservice.repository.impl.WalletInMemoryRepository;
-import com.alexnail.currencyconversionservice.service.CommissionService;
-import com.alexnail.currencyconversionservice.service.ExchangeRateService;
-import com.alexnail.currencyconversionservice.service.TransferService;
-import com.alexnail.currencyconversionservice.service.WalletService;
-import com.alexnail.currencyconversionservice.service.impl.CommissionServiceImpl;
-import com.alexnail.currencyconversionservice.service.impl.ExchangeRateServiceImpl;
-import com.alexnail.currencyconversionservice.service.impl.TransferServiceImpl;
-import com.alexnail.currencyconversionservice.service.impl.WalletServiceImpl;
+import com.alexnail.currencyconversionservice.service.*;
+import com.alexnail.currencyconversionservice.service.impl.*;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 
@@ -36,8 +26,13 @@ public class IntegrationTestConfiguration {
     }
 
     @Bean
+    ExchangeRateRemoteClient exchangeRateRemoteService() {
+        return new CurrencyLayerClient();
+    }
+
+    @Bean
     ExchangeRateService exchangeRateService() {
-        return new ExchangeRateServiceImpl(exchangeRepository());
+        return new ExchangeRateServiceImpl(exchangeRepository(), exchangeRateRemoteService());
     }
 
     @Bean

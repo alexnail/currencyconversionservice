@@ -1,29 +1,183 @@
 package com.alexnail.currencyconversionservice.repository;
 
+import com.alexnail.currencyconversionservice.model.ExchangeRate;
+import com.alexnail.currencyconversionservice.model.ExchangeRateId;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.util.Pair;
 
 import javax.annotation.PostConstruct;
+import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class ExchangeRateInMemoryRepository implements ExchangeRateRepository {
 
-    private static final Map<Pair<String, String>, Double> rates = new HashMap<>();
+    private static final Map<Pair<String, String>, ExchangeRate> rates = new HashMap<>();
 
     @PostConstruct
     private void init() {
-        rates.put(Pair.of("USD", "EUR"), 0.84);
-        rates.put(Pair.of("EUR", "USD"), 1.19);
-        rates.put(Pair.of("EUR", "RUB"), 88.25);
-        rates.put(Pair.of("RUB", "EUR"), 0.011);
-        rates.put(Pair.of("USD", "RUB"), 74.32);
-        rates.put(Pair.of("RUB", "USD"), 0.013);
+        Long now = System.currentTimeMillis();
+        rates.put(Pair.of("USD", "EUR"), new ExchangeRate("USD", "EUR", BigDecimal.valueOf(0.84), now));
+        rates.put(Pair.of("EUR", "USD"), new ExchangeRate("EUR", "USD", BigDecimal.valueOf(1.19), now));
+        rates.put(Pair.of("EUR", "RUB"), new ExchangeRate("EUR", "RUB", BigDecimal.valueOf(88.25), now));
+        rates.put(Pair.of("RUB", "EUR"), new ExchangeRate("RUB", "EUR", BigDecimal.valueOf(0.011), now));
+        rates.put(Pair.of("USD", "RUB"), new ExchangeRate("USD", "RUB", BigDecimal.valueOf(74.32), now));
+        rates.put(Pair.of("RUB", "USD"), new ExchangeRate("RUB", "USD", BigDecimal.valueOf(0.013), now));
     }
 
     @Override
-    public Double getRate(String fromCurrency, String toCurrency) {
+    public ExchangeRate findByLatestTimestamp(String fromCurrency, String toCurrency) {
         if (fromCurrency.equals(toCurrency))
-            return 1.0;
+            return ExchangeRate.builder()
+                    .rate(BigDecimal.ONE)
+                    .fromCurrency(fromCurrency).toCurrency(toCurrency)
+                    .timestamp(System.currentTimeMillis()).build();
         return rates.get(Pair.of(fromCurrency, toCurrency));
+    }
+
+
+    @Override
+    public List<ExchangeRate> findAll() {
+        return null;
+    }
+
+    @Override
+    public List<ExchangeRate> findAll(Sort sort) {
+        return null;
+    }
+
+    @Override
+    public Page<ExchangeRate> findAll(Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public List<ExchangeRate> findAllById(Iterable<ExchangeRateId> exchangeRateIds) {
+        return null;
+    }
+
+    @Override
+    public long count() {
+        return 0;
+    }
+
+    @Override
+    public void deleteById(ExchangeRateId exchangeRateId) {
+
+    }
+
+    @Override
+    public void delete(ExchangeRate exchangeRate) {
+
+    }
+
+    @Override
+    public void deleteAllById(Iterable<? extends ExchangeRateId> iterable) {
+
+    }
+
+    @Override
+    public void deleteAll(Iterable<? extends ExchangeRate> iterable) {
+
+    }
+
+    @Override
+    public void deleteAll() {
+
+    }
+
+    @Override
+    public <S extends ExchangeRate> S save(S s) {
+        return null;
+    }
+
+    @Override
+    public <S extends ExchangeRate> List<S> saveAll(Iterable<S> entities) {
+        return null;
+    }
+
+    @Override
+    public Optional<ExchangeRate> findById(ExchangeRateId exchangeRateId) {
+        return Optional.empty();
+    }
+
+    @Override
+    public boolean existsById(ExchangeRateId exchangeRateId) {
+        return false;
+    }
+
+    @Override
+    public void flush() {
+
+    }
+
+    @Override
+    public <S extends ExchangeRate> S saveAndFlush(S entity) {
+        return null;
+    }
+
+    @Override
+    public <S extends ExchangeRate> List<S> saveAllAndFlush(Iterable<S> entities) {
+        return null;
+    }
+
+    @Override
+    public void deleteAllInBatch(Iterable<ExchangeRate> entities) {
+
+    }
+
+    @Override
+    public void deleteAllByIdInBatch(Iterable<ExchangeRateId> exchangeRateIds) {
+
+    }
+
+    @Override
+    public void deleteAllInBatch() {
+
+    }
+
+    @Override
+    public ExchangeRate getOne(ExchangeRateId exchangeRateId) {
+        return null;
+    }
+
+    @Override
+    public ExchangeRate getById(ExchangeRateId exchangeRateId) {
+        return null;
+    }
+
+    @Override
+    public <S extends ExchangeRate> Optional<S> findOne(Example<S> example) {
+        return Optional.empty();
+    }
+
+    @Override
+    public <S extends ExchangeRate> List<S> findAll(Example<S> example) {
+        return null;
+    }
+
+    @Override
+    public <S extends ExchangeRate> List<S> findAll(Example<S> example, Sort sort) {
+        return null;
+    }
+
+    @Override
+    public <S extends ExchangeRate> Page<S> findAll(Example<S> example, Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public <S extends ExchangeRate> long count(Example<S> example) {
+        return 0;
+    }
+
+    @Override
+    public <S extends ExchangeRate> boolean exists(Example<S> example) {
+        return false;
     }
 }

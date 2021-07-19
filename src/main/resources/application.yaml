@@ -24,3 +24,11 @@ spring:
     init:
       platform: h2
 
+exchangerate:
+    remote:
+      service:
+        url: http://apilayer.net/api/live
+        key:
+    obsolete:
+      threshold:
+        mins: 15
