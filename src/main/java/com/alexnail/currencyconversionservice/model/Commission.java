@@ -1,7 +1,6 @@
 package com.alexnail.currencyconversionservice.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,7 +12,6 @@ import javax.persistence.IdClass;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @IdClass(CommissionId.class)
 public class Commission {
     @Id

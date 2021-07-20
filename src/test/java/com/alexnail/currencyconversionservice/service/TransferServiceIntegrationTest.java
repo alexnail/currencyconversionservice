@@ -32,12 +32,8 @@ public class TransferServiceIntegrationTest {
 
     @BeforeEach
     private void init() {
-        walletService.create(Wallet.builder()
-                .amount(BigDecimal.valueOf(100))
-                .currency("EUR").build());
-        walletService.create(Wallet.builder()
-                .amount(BigDecimal.valueOf(150))
-                .currency("USD").build());
+        walletService.create(new Wallet(BigDecimal.valueOf(100), "EUR", 1L));
+        walletService.create(new Wallet(BigDecimal.valueOf(150), "USD", 2L));
 
         commissionService.setCommission(new Commission("EUR", "USD", 1.0));
     }
@@ -45,7 +41,7 @@ public class TransferServiceIntegrationTest {
     @Test
     @DisplayName("Test transfer of RUB amount from EUR wallet to USD wallet.")
     public void testTransfer() {
-        transferService.transfer(BigDecimal.valueOf(1000.0), "RUB", 1L, 2L);
+        transferService.transfer(1L, 2L, BigDecimal.valueOf(1000.0), "RUB");
 
         Wallet sourceWallet = walletService.getById(1L);
         Wallet targetWallet = walletService.getById(2L);

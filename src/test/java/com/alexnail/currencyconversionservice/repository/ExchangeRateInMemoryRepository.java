@@ -10,6 +10,8 @@ import org.springframework.data.util.Pair;
 
 import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,21 +24,18 @@ public class ExchangeRateInMemoryRepository implements ExchangeRateRepository {
     @PostConstruct
     private void init() {
         Long now = System.currentTimeMillis();
-        rates.put(Pair.of("USD", "EUR"), new ExchangeRate("USD", "EUR", BigDecimal.valueOf(0.84), now));
-        rates.put(Pair.of("EUR", "USD"), new ExchangeRate("EUR", "USD", BigDecimal.valueOf(1.19), now));
-        rates.put(Pair.of("EUR", "RUB"), new ExchangeRate("EUR", "RUB", BigDecimal.valueOf(88.25), now));
-        rates.put(Pair.of("RUB", "EUR"), new ExchangeRate("RUB", "EUR", BigDecimal.valueOf(0.011), now));
-        rates.put(Pair.of("USD", "RUB"), new ExchangeRate("USD", "RUB", BigDecimal.valueOf(74.32), now));
-        rates.put(Pair.of("RUB", "USD"), new ExchangeRate("RUB", "USD", BigDecimal.valueOf(0.013), now));
+        rates.put(Pair.of("USD", "EUR"), new ExchangeRate("USD", "EUR", BigDecimal.valueOf(0.84), Timestamp.from(Instant.now())));
+        rates.put(Pair.of("EUR", "USD"), new ExchangeRate("EUR", "USD", BigDecimal.valueOf(1.19), Timestamp.from(Instant.now())));
+        rates.put(Pair.of("EUR", "RUB"), new ExchangeRate("EUR", "RUB", BigDecimal.valueOf(88.25), Timestamp.from(Instant.now())));
+        rates.put(Pair.of("RUB", "EUR"), new ExchangeRate("RUB", "EUR", BigDecimal.valueOf(0.011), Timestamp.from(Instant.now())));
+        rates.put(Pair.of("USD", "RUB"), new ExchangeRate("USD", "RUB", BigDecimal.valueOf(74.32), Timestamp.from(Instant.now())));
+        rates.put(Pair.of("RUB", "USD"), new ExchangeRate("RUB", "USD", BigDecimal.valueOf(0.013), Timestamp.from(Instant.now())));
     }
 
     @Override
     public ExchangeRate findByLatestTimestamp(String fromCurrency, String toCurrency) {
         if (fromCurrency.equals(toCurrency))
-            return ExchangeRate.builder()
-                    .rate(BigDecimal.ONE)
-                    .fromCurrency(fromCurrency).toCurrency(toCurrency)
-                    .timestamp(System.currentTimeMillis()).build();
+            return new ExchangeRate(fromCurrency, toCurrency, BigDecimal.ONE, Timestamp.from(Instant.now()));
         return rates.get(Pair.of(fromCurrency, toCurrency));
     }
 

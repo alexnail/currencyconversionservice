@@ -12,13 +12,14 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.Instant;
 
-import static org.hamcrest.Matchers.is;
-import static org.mockito.BDDMockito.given;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.hamcrest.Matchers.*;
+import static org.mockito.BDDMockito.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(ExchangeRateController.class)
@@ -31,9 +32,8 @@ class ExchangeRateControllerTest {
 
     @Test
     public void testGetWallets() throws Exception {
-        ExchangeRate exchangeRate = ExchangeRate.builder()
-                .fromCurrency("USD").toCurrency("EUR")
-                .rate(BigDecimal.valueOf(0.849425)).timestamp(System.currentTimeMillis()).build();
+        ExchangeRate exchangeRate =  new ExchangeRate("USD", "EUR",
+                BigDecimal.valueOf(0.849425), Timestamp.from(Instant.now()));
         given(service.getRate("USD", "EUR")).willReturn(exchangeRate);
         mvc.perform(get("/api/exchangerates/USD/EUR").with(user("user").password("password"))
                 .contentType(MediaType.APPLICATION_JSON)

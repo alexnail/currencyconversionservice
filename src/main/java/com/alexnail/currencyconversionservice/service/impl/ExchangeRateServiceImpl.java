@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 @RequiredArgsConstructor
@@ -30,6 +33,8 @@ public class ExchangeRateServiceImpl implements ExchangeRateService {
 
     @Override
     public ExchangeRate getRate(String fromCurrency, String toCurrency) {
+        if (fromCurrency.equals(toCurrency))
+            return new ExchangeRate(fromCurrency, toCurrency, BigDecimal.ONE, Timestamp.from(Instant.now()));
         ExchangeRate latestRate = repository.findByLatestTimestamp(fromCurrency, toCurrency);
         if (latestRate == null || isObsoleteRate(latestRate)) {
             latestRate = exchangeRateRemoteClient.fetchLatestRate(fromCurrency, toCurrency);
@@ -40,6 +45,7 @@ public class ExchangeRateServiceImpl implements ExchangeRateService {
     }
 
     private boolean isObsoleteRate(ExchangeRate latestRate) {
-        return System.currentTimeMillis() > latestRate.getTimestamp() + obsoleteThresholdMinutes * 60 * 1000;
+        Instant expiredInstant = latestRate.getTimestamp().toInstant().plus(obsoleteThresholdMinutes, ChronoUnit.MINUTES);
+        return Timestamp.from(Instant.now()).after(Timestamp.from(expiredInstant));
     }
 }

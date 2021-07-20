@@ -1,7 +1,6 @@
 package com.alexnail.currencyconversionservice.service;
 
 import com.alexnail.currencyconversionservice.model.Commission;
-import org.springframework.data.util.Pair;
 
 import java.math.BigDecimal;
 import java.util.Collection;
@@ -12,9 +11,9 @@ public interface CommissionService {
 
     Commission setCommission(Commission commission);
 
-    Commission getCommission(Pair<String, String> currencyPair);
+    Commission getCommission(String currencyFrom, String currencyTo);
 
-    BigDecimal getAmountMinusCommission(BigDecimal amount, Pair<String, String> currencyPair);
+    BigDecimal getAmountMinusCommission(BigDecimal amount, String currencyFrom, String currencyTo);
 
     void delete(Commission commission);
 }

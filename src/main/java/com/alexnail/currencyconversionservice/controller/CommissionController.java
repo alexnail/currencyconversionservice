@@ -5,7 +5,6 @@ import com.alexnail.currencyconversionservice.model.Commission;
 import com.alexnail.currencyconversionservice.service.CommissionService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,7 +36,7 @@ public class CommissionController {
 
     @GetMapping("/{from}/{to}")
     public CommissionDto getCommission(@PathVariable String from, @PathVariable String to) {
-        return convertToDto(commissionService.getCommission(Pair.of(from, to)));
+        return convertToDto(commissionService.getCommission(from, to));
     }
 
     @PostMapping
@@ -49,7 +48,7 @@ public class CommissionController {
     @DeleteMapping("/{from}/{to}")
     @ResponseStatus(HttpStatus.OK)
     public void deleteCommission(@PathVariable String from, @PathVariable String to) {
-        commissionService.delete(commissionService.getCommission(Pair.of(from, to)));
+        commissionService.delete(commissionService.getCommission(from, to));
     }
 
     private CommissionDto convertToDto(Commission entity) {

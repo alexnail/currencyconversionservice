@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.Map;
 
 @Service
@@ -27,11 +28,9 @@ public class CurrencyLayerClient implements ExchangeRateRemoteClient {
                         Map.of("key", accessKey, "src", fromCurrency, "tgt", toCurrency));
 
         if (entity != null && entity.isSuccess())
-            return ExchangeRate.builder()
-                    .rate(BigDecimal.valueOf(entity.getQuotes().get(fromCurrency + toCurrency)))
-                    .fromCurrency(fromCurrency).toCurrency(toCurrency)
-                    .timestamp(entity.getTimestamp())
-                    .build();
+            return new ExchangeRate(fromCurrency, toCurrency,
+                    BigDecimal.valueOf(entity.getQuotes().get(fromCurrency + toCurrency)),
+                    new Timestamp(entity.getTimestamp()));
         return null;
     }
 
