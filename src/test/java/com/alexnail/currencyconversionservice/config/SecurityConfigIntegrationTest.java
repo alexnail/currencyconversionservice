@@ -1,8 +1,6 @@
 package com.alexnail.currencyconversionservice.config;
 
 import com.alexnail.currencyconversionservice.model.Wallet;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,25 +14,18 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-@Disabled("Passes when run individually but fails with the Context not found error when runs in suite. Going to be addressed later.")
 class SecurityConfigIntegrationTest {
 
-    private TestRestTemplate restTemplate;
-    private URL base;
     @LocalServerPort
     private int port;
 
-    @BeforeEach
-    void setUp() throws MalformedURLException {
-        restTemplate = new TestRestTemplate("user", "password");
-        base = new URL("http://localhost:" + port);
-    }
+    private TestRestTemplate restTemplate = new TestRestTemplate("user", "password");
+    private URL base;
 
     @Test
     @DisplayName("Home resource is available for all users")
@@ -57,7 +48,6 @@ class SecurityConfigIntegrationTest {
         ResponseEntity<Wallet[]> response =  restTemplate.getForEntity(base.toString(), Wallet[].class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertTrue(response.getBody().length == 2);
     }
 
     @Test
