@@ -1,6 +1,7 @@
 package com.alexnail.currencyconversionservice.service;
 
 import com.alexnail.currencyconversionservice.config.IntegrationTestConfiguration;
+import com.alexnail.currencyconversionservice.model.Commission;
 import com.alexnail.currencyconversionservice.model.Wallet;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -8,14 +9,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.util.Pair;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.math.BigDecimal;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @Import(IntegrationTestConfiguration.class)
@@ -40,7 +39,7 @@ public class TransferServiceIntegrationTest {
                 .amount(BigDecimal.valueOf(150))
                 .currency("USD").build());
 
-        commissionService.setCommission(1.0, Pair.of("EUR", "USD"));
+        commissionService.setCommission(new Commission("EUR", "USD", 1.0));
     }
 
     @Test
