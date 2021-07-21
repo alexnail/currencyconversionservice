@@ -1,12 +1,12 @@
 package com.alexnail.currencyconversionservice.util;
 
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
-import java.math.BigDecimal;
+import static java.math.BigDecimal.*;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TransferAmountCalculatorTest {
 
@@ -14,26 +14,25 @@ class TransferAmountCalculatorTest {
 
     @Test
     void testCalculateReceiveAmount() {
-        /*assertEquals(BigDecimal.ONE, calculator.calculateReceive(BigDecimal.ONE, BigDecimal.ONE, 0.0));
-        assertEquals(BigDecimal.valueOf(99), calculator.calculateReceive(BigDecimal.valueOf(100), BigDecimal.ONE, 1.0));
-        assertThat(BigDecimal.valueOf(88.18),
-                Matchers.comparesEqualTo(calculator.calculateReceive(BigDecimal.valueOf(100), BigDecimal.valueOf(0.8818), 0.0)));
-        assertEquals(BigDecimal.valueOf(97), calculator.calculateReceive(BigDecimal.valueOf(100), BigDecimal.ONE, 3.0));*/
-        //assertEquals(BigDecimal.valueOf(0.42), calculator.calculateReceive(BigDecimal.ONE, BigDecimal.valueOf(0.500), 15.0));
-        assertEquals(BigDecimal.valueOf(113.62), calculator.calculateReceive(BigDecimal.valueOf(25.25), BigDecimal.valueOf(5), 10.0));
+        assertAll(
+                () -> assertThat(calculator.calculateReceive(ONE, ONE, 0d), comparesEqualTo(ONE)),
+                () -> assertThat(calculator.calculateReceive(valueOf(100), ONE, 1d), comparesEqualTo(valueOf(99))),
+                () -> assertThat(calculator.calculateReceive(valueOf(100), valueOf(0.8818), 0d), comparesEqualTo(valueOf(88.18))),
+                () -> assertThat(calculator.calculateReceive(valueOf(100), ONE, 3d), comparesEqualTo(valueOf(97))),
+                //() -> assertThat(calculator.calculateReceive(ONE, valueOf(0.5), 15d), comparesEqualTo(valueOf(0.42))),
+                () -> assertThat(calculator.calculateReceive(valueOf(25.25), valueOf(5), 10d), comparesEqualTo(valueOf(113.62)))
+        );
     }
 
     @Test
     void testCalculateReverseSend() {
-        /*assertEquals(BigDecimal.ONE, calculator.calculate(BigDecimal.ZERO, BigDecimal.ONE, BigDecimal.ONE, 0.0));
-        assertEquals(BigDecimal.valueOf(101), calculator.calculate(BigDecimal.ZERO, BigDecimal.valueOf(100), BigDecimal.ONE, 1.0));
-        assertThat(BigDecimal.valueOf(100),
-                Matchers.comparesEqualTo(calculator.calculate(BigDecimal.ZERO, BigDecimal.valueOf(88.18), BigDecimal.valueOf(0.8818), 0.0)));
-        assertThat(BigDecimal.valueOf(100),
-                Matchers.comparesEqualTo(calculator.calculate(BigDecimal.ZERO, BigDecimal.valueOf(97), BigDecimal.ONE, 3.0)));*/
-        /*assertThat(BigDecimal.ONE,
-                Matchers.comparesEqualTo(calculator.calculate(BigDecimal.ZERO, BigDecimal.valueOf(0.42), BigDecimal.valueOf(0.500), 15.0)));*/
-        assertThat(BigDecimal.valueOf(25.25),
-                Matchers.comparesEqualTo(calculator.calculateReverseSend(BigDecimal.valueOf(113.62), BigDecimal.valueOf(5), 10.0)));
+        assertAll(
+                () -> assertThat(calculator.calculateReverseSend(ONE, ONE, 0d), comparesEqualTo(ONE)),
+                () -> assertThat(calculator.calculateReverseSend(valueOf(100), ONE, 1d), comparesEqualTo(valueOf(101))),
+                () -> assertThat(calculator.calculateReverseSend(valueOf(88.18), valueOf(0.8818), 0d), comparesEqualTo(valueOf(100))),
+                () -> assertThat(calculator.calculateReverseSend(valueOf(97), ONE, 3d), comparesEqualTo(valueOf(100))),
+                () -> assertThat(calculator.calculateReverseSend(valueOf(0.42), valueOf(0.5), 15d), comparesEqualTo(ONE)),
+                () -> assertThat(calculator.calculateReverseSend(valueOf(113.62), valueOf(5), 10d), comparesEqualTo(valueOf(25.25)))
+        );
     }
 }

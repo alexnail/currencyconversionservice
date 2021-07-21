@@ -8,7 +8,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.util.Pair;
 
-import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -20,17 +19,6 @@ import java.util.Optional;
 public class ExchangeRateInMemoryRepository implements ExchangeRateRepository {
 
     private static final Map<Pair<String, String>, ExchangeRate> rates = new HashMap<>();
-
-    @PostConstruct
-    private void init() {
-        Long now = System.currentTimeMillis();
-        rates.put(Pair.of("USD", "EUR"), new ExchangeRate("USD", "EUR", BigDecimal.valueOf(0.84), Timestamp.from(Instant.now())));
-        rates.put(Pair.of("EUR", "USD"), new ExchangeRate("EUR", "USD", BigDecimal.valueOf(1.19), Timestamp.from(Instant.now())));
-        rates.put(Pair.of("EUR", "RUB"), new ExchangeRate("EUR", "RUB", BigDecimal.valueOf(88.25), Timestamp.from(Instant.now())));
-        rates.put(Pair.of("RUB", "EUR"), new ExchangeRate("RUB", "EUR", BigDecimal.valueOf(0.011), Timestamp.from(Instant.now())));
-        rates.put(Pair.of("USD", "RUB"), new ExchangeRate("USD", "RUB", BigDecimal.valueOf(74.32), Timestamp.from(Instant.now())));
-        rates.put(Pair.of("RUB", "USD"), new ExchangeRate("RUB", "USD", BigDecimal.valueOf(0.013), Timestamp.from(Instant.now())));
-    }
 
     @Override
     public ExchangeRate findByLatestTimestamp(String fromCurrency, String toCurrency) {
@@ -62,7 +50,7 @@ public class ExchangeRateInMemoryRepository implements ExchangeRateRepository {
 
     @Override
     public long count() {
-        return 0;
+        return rates.size();
     }
 
     @Override
@@ -92,7 +80,7 @@ public class ExchangeRateInMemoryRepository implements ExchangeRateRepository {
 
     @Override
     public <S extends ExchangeRate> S save(S s) {
-        return null;
+        return (S) rates.put(Pair.of(s.getFromCurrency(), s.getToCurrency()), s);
     }
 
     @Override

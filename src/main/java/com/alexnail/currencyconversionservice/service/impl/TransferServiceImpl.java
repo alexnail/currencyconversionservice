@@ -1,5 +1,7 @@
 package com.alexnail.currencyconversionservice.service.impl;
 
+import com.alexnail.currencyconversionservice.exceptions.AmbiguousTransferValuesException;
+import com.alexnail.currencyconversionservice.exceptions.NotEnoughMoneyException;
 import com.alexnail.currencyconversionservice.model.Wallet;
 import com.alexnail.currencyconversionservice.service.CommissionService;
 import com.alexnail.currencyconversionservice.service.ExchangeRateService;
@@ -29,8 +31,10 @@ public class TransferServiceImpl implements TransferService {
         Wallet targetWallet = walletService.getById(targetWalletId);
 
         BigDecimal withdrawAmount = exchangeRateService.exchange(amount, currency, sourceWallet.getCurrency());
-        BigDecimal depositAmount = exchangeRateService.exchange(withdrawAmount, sourceWallet.getCurrency(), targetWallet.getCurrency());
+        if (isNotEnoughMoney(withdrawAmount, sourceWallet))
+            throw new NotEnoughMoneyException(withdrawAmount, sourceWallet.getAmount(), sourceWallet.getCurrency());
 
+        BigDecimal depositAmount = exchangeRateService.exchange(withdrawAmount, sourceWallet.getCurrency(), targetWallet.getCurrency());
         BigDecimal depositExCommission = commissionService.getAmountMinusCommission(
                 depositAmount, sourceWallet.getCurrency(), targetWallet.getCurrency()
         );
@@ -38,29 +42,25 @@ public class TransferServiceImpl implements TransferService {
         walletService.deposit(targetWalletId, depositExCommission);
     }
 
+    private boolean isNotEnoughMoney(BigDecimal withdrawAmount, Wallet sourceWallet) {
+        return withdrawAmount.stripTrailingZeros().compareTo(sourceWallet.getAmount().stripTrailingZeros()) > 0;
+    }
+
     @Override
     public void transfer(Long sourceWalletId, Long targetWalletId, BigDecimal send, BigDecimal receive) {
         String sourceCurrency = walletService.getById(sourceWalletId).getCurrency();
         String targetCurrency = walletService.getById(targetWalletId).getCurrency();
-        BigDecimal rate = exchangeRateService.getRate(sourceCurrency, targetCurrency).getRate();
         Double commission = commissionService.getCommission(sourceCurrency, targetCurrency).getCommission();
 
         if (!isEmptyValue(send) && isEmptyValue(receive)) {
             transfer(sourceWalletId, targetWalletId, send, sourceCurrency);
         } else if (isEmptyValue(send) && !isEmptyValue(receive)) {
-            transfer(sourceWalletId, targetWalletId,
-                    calculator.calculateReverseSend(send, rate, commission), sourceCurrency);
-        } else { //both send and receive values are provided
-            if (sendAndReverseSendAreEqual(send, receive, rate, commission))
-                transfer(sourceWalletId, targetWalletId, send, sourceCurrency);
-            else
-                throw new RuntimeException("Both send and receive have non-empty values. Can't decide which value to use for transfer amount calculation.");
+            BigDecimal reverseRate = exchangeRateService.getRate(targetCurrency, sourceCurrency).getRate();
+            BigDecimal reverseSend = calculator.calculateReverseSend(receive, reverseRate, commission);
+            transfer(targetWalletId, sourceWalletId, reverseSend, targetCurrency);
+        } else {
+            throw new AmbiguousTransferValuesException();
         }
-    }
-
-    private boolean sendAndReverseSendAreEqual(BigDecimal send, BigDecimal receive, BigDecimal rate, Double commission) {
-        return send.stripTrailingZeros()
-                .compareTo(calculator.calculateReverseSend(receive, rate, commission).stripTrailingZeros()) == 0;
     }
 
     private boolean isEmptyValue(BigDecimal value) {

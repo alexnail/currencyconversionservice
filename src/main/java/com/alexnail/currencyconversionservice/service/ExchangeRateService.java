@@ -8,4 +8,6 @@ public interface ExchangeRateService {
     BigDecimal exchange(BigDecimal amount, String fromCurrency, String toCurrency);
 
     ExchangeRate getRate(String from, String to);
+
+    void setRate(String fromCurrency, String toCurrency, ExchangeRate exchangeRate);
 }

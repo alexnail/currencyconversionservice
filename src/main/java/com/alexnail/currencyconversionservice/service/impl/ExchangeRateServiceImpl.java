@@ -38,10 +38,17 @@ public class ExchangeRateServiceImpl implements ExchangeRateService {
         ExchangeRate latestRate = repository.findByLatestTimestamp(fromCurrency, toCurrency);
         if (latestRate == null || isObsoleteRate(latestRate)) {
             latestRate = exchangeRateRemoteClient.fetchLatestRate(fromCurrency, toCurrency);
+            // could also add another check for null before throwing exception
+            // if we were unable to get the latest but obsolete is still available we could use it
             Objects.requireNonNull(latestRate, String.format("Failed to fetch rate for [%s/%s] pair", fromCurrency, toCurrency));
             repository.saveAndFlush(latestRate);
         }
         return latestRate;
+    }
+
+    @Override
+    public void setRate(String fromCurrency, String toCurrency, ExchangeRate exchangeRate) {
+        repository.save(exchangeRate);
     }
 
     private boolean isObsoleteRate(ExchangeRate latestRate) {
