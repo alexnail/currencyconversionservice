@@ -9,11 +9,6 @@
       "name": "exchangerate.remote.service.url",
       "type": "java.lang.String",
       "description": "Base URL of the remote service API."
-    },
-    {
-      "name": "exchangerate.remote.service.key",
-      "type": "java.lang.String",
-      "description": "Remote service API access key."
     }
   ]
 }
