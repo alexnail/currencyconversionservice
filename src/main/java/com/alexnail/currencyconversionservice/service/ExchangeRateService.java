@@ -9,5 +9,7 @@ public interface ExchangeRateService {
 
     ExchangeRate getRate(String from, String to);
 
-    void setRate(String fromCurrency, String toCurrency, ExchangeRate exchangeRate);
+    ExchangeRate setRate(String fromCurrency, String toCurrency, ExchangeRate exchangeRate);
+
+    void deleteRate(String from, String to);
 }

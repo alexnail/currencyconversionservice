@@ -47,8 +47,13 @@ public class ExchangeRateServiceImpl implements ExchangeRateService {
     }
 
     @Override
-    public void setRate(String fromCurrency, String toCurrency, ExchangeRate exchangeRate) {
-        repository.save(exchangeRate);
+    public ExchangeRate setRate(String fromCurrency, String toCurrency, ExchangeRate exchangeRate) {
+        return repository.save(exchangeRate);
+    }
+
+    @Override
+    public void deleteRate(String fromCurrency, String toCurency) {
+        repository.delete(getRate(fromCurrency, toCurency));
     }
 
     private boolean isObsoleteRate(ExchangeRate latestRate) {
