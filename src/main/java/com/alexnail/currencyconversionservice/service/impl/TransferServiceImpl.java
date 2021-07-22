@@ -25,7 +25,6 @@ public class TransferServiceImpl implements TransferService {
     private final CommissionService commissionService;
 
 
-    @Transactional
     public void transfer(Long sourceWalletId, Long targetWalletId, BigDecimal amount, String currency) {
         Wallet sourceWallet = walletService.getById(sourceWalletId);
         Wallet targetWallet = walletService.getById(targetWalletId);
@@ -47,6 +46,7 @@ public class TransferServiceImpl implements TransferService {
     }
 
     @Override
+    @Transactional
     public void transfer(Long sourceWalletId, Long targetWalletId, BigDecimal send, BigDecimal receive) {
         String sourceCurrency = walletService.getById(sourceWalletId).getCurrency();
         String targetCurrency = walletService.getById(targetWalletId).getCurrency();

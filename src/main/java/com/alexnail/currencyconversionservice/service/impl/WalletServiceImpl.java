@@ -5,6 +5,7 @@ import com.alexnail.currencyconversionservice.repository.WalletRepository;
 import com.alexnail.currencyconversionservice.service.WalletService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
@@ -49,7 +50,7 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.MANDATORY)
     public void withdraw(Long walletId, BigDecimal amount) {
         Wallet wallet = getById(walletId);
         BigDecimal value = wallet.getAmount();
@@ -58,6 +59,7 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
+    @Transactional(propagation = Propagation.MANDATORY)
     public void deposit(Long walletId, BigDecimal amount) {
         Wallet wallet = getById(walletId);
         BigDecimal value = wallet.getAmount();
