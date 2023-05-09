@@ -99,6 +99,12 @@
                 <version>3.9.1.2184</version>
             </plugin>
 
+            <plugin>
+                <groupId>org.sonarsource.java</groupId>
+                <artifactId>sonar-jacoco-listeners</artifactId>
+                <version>5.14.0.18788</version>
+            </plugin>
+
         </plugins>
     </build>
 
