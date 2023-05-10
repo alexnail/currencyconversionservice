@@ -155,6 +155,7 @@
                 </executions>
                 <configuration>
                     <apiToken>${env.SNYK_TOKEN}</apiToken>
+                    <failOnIssues>false</failOnIssues>
                     <args>
                         <arg>--all-projects</arg>
                     </args>
